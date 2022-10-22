@@ -49,7 +49,7 @@ public class ItemController {
 
     @PatchMapping("/{itemId}")
     public ItemDto update(@Validated({Update.class}) @RequestBody ItemDto itemDto,
-                          @RequestHeader(USER_ID) int ownerId, @PathVariable int itemId){
+                          @RequestHeader(USER_ID) int ownerId, @PathVariable int itemId) {
         log.info("Вызван метод update() в ItemController для владельца с id {} и вещи с id {}.", ownerId, itemId);
 
         return ResponseEntity.ok().body(itemService.update(itemDto, ownerId, itemId)).getBody();
