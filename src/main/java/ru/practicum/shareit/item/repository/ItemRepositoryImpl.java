@@ -1,16 +1,16 @@
-package ru.practicum.shareit.item.repository.impl;
+package ru.practicum.shareit.item.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.common.Storage;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.repository.ItemRepository;
 
 import java.util.*;
 
 @Repository
 @RequiredArgsConstructor
-public class ItemRepositoryImpl implements ItemRepository {
+public class ItemRepositoryImpl implements Storage<Item> {
     private final Map<Integer, Item> items;
 
     private int id = 1;

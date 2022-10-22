@@ -2,7 +2,7 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import ru.practicum.shareit.Create;
+import ru.practicum.shareit.common.Create;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -23,4 +23,6 @@ public class ItemDto {
 
     @NotNull(groups = {Create.class})
     private Boolean available;
+
+    private Integer requestId;
 }

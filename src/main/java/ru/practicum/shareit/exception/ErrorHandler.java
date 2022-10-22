@@ -15,7 +15,7 @@ public class ErrorHandler {
     public ResponseEntity<Response> handleException(RuntimeException e) {
         log.info("Ошибка: {}", e.getMessage());
 
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(NotFoundException.class)
@@ -25,8 +25,8 @@ public class ErrorHandler {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(ValidateException.class)
-    public ResponseEntity<Response> handleException(ValidateException e) {
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<Response> handleException(ConflictException e) {
         log.info("Ошибка: {}", e.getMessage());
 
         return new ResponseEntity<>(HttpStatus.CONFLICT);

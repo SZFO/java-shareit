@@ -2,22 +2,23 @@ package ru.practicum.shareit.user.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.common.Storage;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ValidateException;
+import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
+
+import static ru.practicum.shareit.user.mapper.UserMapper.*;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
+    private final Storage<User> userRepository;
 
     @Override
     public List<UserDto> getAll() {
@@ -31,15 +32,15 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.getById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %s не найден.", id)));
 
-        return UserMapper.userToDto(user);
+        return userToDto(user);
     }
 
     @Override
     public UserDto create(UserDto userDto) {
-        User user = UserMapper.dtoToUser(userDto);
-        validateEmail(user.getEmail());
+        User user = dtoToUser(userDto);
+        throwCrossEmail(user.getEmail());
 
-        return UserMapper.userToDto(userRepository.create(user));
+        return userToDto(userRepository.create(user));
     }
 
     @Override
@@ -50,10 +51,12 @@ public class UserServiceImpl implements UserService {
             updatedUser.setName(userDto.getName());
         }
         if (userDto.getEmail() != null) {
-            validateEmail(userDto.getEmail());
+            throwCrossEmail(userDto.getEmail());
             updatedUser.setEmail(userDto.getEmail());
         }
-        return UserMapper.userToDto(userRepository.update(updatedUser));
+        return userToDto(userRepository.update(updatedUser));
+
+
     }
 
     @Override
@@ -61,10 +64,9 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(id);
     }
 
-    private void validateEmail(String email) {
-        if (userRepository.getAll().stream()
-                .anyMatch(a -> a.getEmail().toLowerCase(Locale.ROOT).equals(email.toLowerCase()))) {
-            throw new ValidateException(String.format("Пользователь с почтой %s уже существует.", email));
+    private void throwCrossEmail(String email) {
+        if (userRepository.getAll().stream().anyMatch(a -> a.getEmail().equalsIgnoreCase(email))) {
+            throw new ConflictException(String.format("Пользователь с почтой %s уже существует.", email));
         }
     }
 }

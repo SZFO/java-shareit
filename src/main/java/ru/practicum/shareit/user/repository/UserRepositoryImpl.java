@@ -1,16 +1,17 @@
-package ru.practicum.shareit.user.repository.impl;
+package ru.practicum.shareit.user.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.common.Storage;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserRepository;
+
 
 import java.util.*;
 
 @Repository
 @RequiredArgsConstructor
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepositoryImpl implements Storage<User> {
     private final Map<Integer, User> users;
 
     private int id = 1;
