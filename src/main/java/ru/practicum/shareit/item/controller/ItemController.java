@@ -40,7 +40,7 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto create(@Validated(Create.class) @RequestBody ItemDto itemDto,
+    public ItemDto create(@Validated({Create.class}) @RequestBody ItemDto itemDto,
                           @RequestHeader(USER_ID) int ownerId) {
         log.info("Вызван метод create() в ItemController для владельца c id {}.", ownerId);
 
@@ -48,7 +48,7 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto update(@Validated(Update.class) @RequestBody ItemDto itemDto,
+    public ItemDto update(@Validated({Update.class}) @RequestBody ItemDto itemDto,
                           @RequestHeader(USER_ID) int ownerId, @PathVariable int itemId){
         log.info("Вызван метод update() в ItemController для владельца с id {} и вещи с id {}.", ownerId, itemId);
 

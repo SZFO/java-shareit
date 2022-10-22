@@ -38,14 +38,14 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto create(@Validated(Create.class) @RequestBody UserDto userDto) {
+    public UserDto create(@Validated({Create.class}) @RequestBody UserDto userDto) {
         log.info("Вызван метод create() в UserController.");
 
         return ResponseEntity.ok().body(userService.create(userDto)).getBody();
     }
 
     @PatchMapping("/{id}")
-    public UserDto update(@Validated(Update.class) @RequestBody UserDto userDto, @PathVariable int id) {
+    public UserDto update(@Validated({Update.class}) @RequestBody UserDto userDto, @PathVariable int id) {
         log.info("Вызван метод update() в UserController для пользователя с id {}.", id);
 
         return ResponseEntity.ok().body(userService.update(userDto, id)).getBody();
