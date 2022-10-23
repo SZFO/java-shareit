@@ -28,31 +28,35 @@ public class ItemController {
     @GetMapping
     public List<ItemDto> getAllByOwner(@RequestHeader(USER_ID) int ownerId) {
         log.info("Вызван метод getAll() в ItemController.");
+        List<ItemDto> allByOwner = itemService.getAllByOwner(ownerId);
 
-        return ResponseEntity.ok().body(itemService.getAllByOwner(ownerId)).getBody();
+        return ResponseEntity.ok().body(allByOwner).getBody();
     }
 
     @GetMapping("/{id}")
     public ItemDto getById(@PathVariable int id) {
         log.info("Вызван метод getById() в ItemController для вещи с id {}.", id);
+        ItemDto getById = itemService.getById(id);
 
-        return ResponseEntity.ok().body(itemService.getById(id)).getBody();
+        return ResponseEntity.ok().body(getById).getBody();
     }
 
     @PostMapping
     public ItemDto create(@Validated({Create.class}) @RequestBody ItemDto itemDto,
                           @RequestHeader(USER_ID) int ownerId) {
         log.info("Вызван метод create() в ItemController для владельца c id {}.", ownerId);
+        ItemDto create = itemService.create(itemDto, ownerId);
 
-        return ResponseEntity.ok().body(itemService.create(itemDto, ownerId)).getBody();
+        return ResponseEntity.ok().body(create).getBody();
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto update(@Validated({Update.class}) @RequestBody ItemDto itemDto,
                           @RequestHeader(USER_ID) int ownerId, @PathVariable int itemId) {
         log.info("Вызван метод update() в ItemController для владельца с id {} и вещи с id {}.", ownerId, itemId);
+        ItemDto update = itemService.update(itemDto, ownerId, itemId);
 
-        return ResponseEntity.ok().body(itemService.update(itemDto, ownerId, itemId)).getBody();
+        return ResponseEntity.ok().body(update).getBody();
     }
 
     @DeleteMapping("/{id}")
@@ -66,7 +70,8 @@ public class ItemController {
     @GetMapping("/search")
     public List<ItemDto> search(@RequestParam String text) {
         log.info("Вызван метод search() в ItemController для поиска вещи по тексту {}.", text);
+        List<ItemDto> search = itemService.search(text);
 
-        return ResponseEntity.ok().body(itemService.search(text)).getBody();
+        return ResponseEntity.ok().body(search).getBody();
     }
 }

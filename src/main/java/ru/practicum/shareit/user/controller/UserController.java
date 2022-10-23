@@ -26,29 +26,33 @@ public class UserController {
     @GetMapping
     public List<UserDto> getAll() {
         log.info("Вызван метод getAll() в UserController.");
+        List<UserDto> getAll = userService.getAll();
 
-        return ResponseEntity.ok().body(userService.getAll()).getBody();
+        return ResponseEntity.ok().body(getAll).getBody();
     }
 
     @GetMapping("/{id}")
     public UserDto getById(@PathVariable int id) {
         log.info("Вызван метод getById() в UserController для пользователя с id {}.", id);
+        UserDto getById = userService.getById(id);
 
-        return ResponseEntity.ok().body(userService.getById(id)).getBody();
+        return ResponseEntity.ok().body(getById).getBody();
     }
 
     @PostMapping
     public UserDto create(@Validated({Create.class}) @RequestBody UserDto userDto) {
         log.info("Вызван метод create() в UserController.");
+        UserDto create = userService.create(userDto);
 
-        return ResponseEntity.ok().body(userService.create(userDto)).getBody();
+        return ResponseEntity.ok().body(create).getBody();
     }
 
     @PatchMapping("/{id}")
     public UserDto update(@Validated({Update.class}) @RequestBody UserDto userDto, @PathVariable int id) {
         log.info("Вызван метод update() в UserController для пользователя с id {}.", id);
+        UserDto update = userService.update(userDto, id);
 
-        return ResponseEntity.ok().body(userService.update(userDto, id)).getBody();
+        return ResponseEntity.ok().body(update).getBody();
     }
 
     @DeleteMapping("/{id}")

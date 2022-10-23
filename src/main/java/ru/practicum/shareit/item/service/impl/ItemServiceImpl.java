@@ -33,8 +33,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto getById(int id) {
-        return itemToDto(itemRepository.getById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("Вещь с id = %s не найдена.", id))));
+        Item item = itemRepository.getById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Вещь с id = %s не найдена.", id)));
+
+        return itemToDto(item);
     }
 
     @Override
