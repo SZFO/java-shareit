@@ -26,7 +26,7 @@ import java.util.List;
 public class ItemController {
     private final ItemService itemService;
 
-    private final String USER_ID = "X-Sharer-User-Id";
+    private static final String USER_ID = "X-Sharer-User-Id";
 
     @GetMapping
     public List<ItemDtoWithBooking> getAllByOwner(@RequestHeader(USER_ID) int ownerId) {

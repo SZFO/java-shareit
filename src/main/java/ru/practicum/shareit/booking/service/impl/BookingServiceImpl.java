@@ -18,6 +18,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import static ru.practicum.shareit.booking.mapper.BookingMapper.*;
 
 @Service
@@ -25,7 +26,9 @@ import static ru.practicum.shareit.booking.mapper.BookingMapper.*;
 @Transactional
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
+
     private final UserRepository userRepository;
+
     private final ItemRepository itemRepository;
 
     @Override
@@ -143,14 +146,17 @@ public class BookingServiceImpl implements BookingService {
         if (approved) {
             booking.setStatus(Status.APPROVED);
             Booking bookingSave = bookingRepository.save(booking);
+
             return bookingToDto(bookingSave);
         } else {
             booking.setStatus(Status.REJECTED);
             booking.setItem(bookingDto.getItem());
             Booking bookingSave = bookingRepository.save(booking);
+
             return bookingToDto(bookingSave);
         }
     }
+
     private void throwNotValidState(String state) {
         try {
             BookingState.valueOf(state);
