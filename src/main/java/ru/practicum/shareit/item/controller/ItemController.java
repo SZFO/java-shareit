@@ -8,9 +8,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.common.Create;
 import ru.practicum.shareit.common.Update;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
 import ru.practicum.shareit.item.service.ItemService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -23,26 +26,28 @@ import java.util.List;
 public class ItemController {
     private final ItemService itemService;
 
-    private static final String USER_ID = "X-Sharer-User-Id";
+    private final String USER_ID = "X-Sharer-User-Id";
 
     @GetMapping
-    public List<ItemDto> getAllByOwner(@RequestHeader(USER_ID) int ownerId) {
+    public List<ItemDtoWithBooking> getAllByOwner(@RequestHeader(USER_ID) int ownerId) {
         log.info("Вызван метод getAll() в ItemController.");
-        List<ItemDto> allByOwner = itemService.getAllByOwner(ownerId);
+        List<ItemDtoWithBooking> allByOwner = itemService.getAllByOwner(ownerId);
 
         return ResponseEntity.ok().body(allByOwner).getBody();
     }
 
     @GetMapping("/{id}")
-    public ItemDto getById(@PathVariable int id) {
+    public ItemDtoWithBooking getById(@RequestHeader(USER_ID) int userId,
+                                      @PathVariable int id) {
         log.info("Вызван метод getById() в ItemController для вещи с id {}.", id);
-        ItemDto getById = itemService.getById(id);
+        ItemDtoWithBooking getById = itemService.getById(userId, id);
 
         return ResponseEntity.ok().body(getById).getBody();
     }
 
     @PostMapping
-    public ItemDto create(@Validated({Create.class}) @RequestBody ItemDto itemDto,
+    public ItemDto create(@Validated({Create.class})
+                          @RequestBody ItemDto itemDto,
                           @RequestHeader(USER_ID) int ownerId) {
         log.info("Вызван метод create() в ItemController для владельца c id {}.", ownerId);
         ItemDto create = itemService.create(itemDto, ownerId);
@@ -51,8 +56,10 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto update(@Validated({Update.class}) @RequestBody ItemDto itemDto,
-                          @RequestHeader(USER_ID) int ownerId, @PathVariable int itemId) {
+    public ItemDto update(@Validated({Update.class})
+                          @RequestBody ItemDto itemDto,
+                          @RequestHeader(USER_ID) int ownerId,
+                          @PathVariable int itemId) {
         log.info("Вызван метод update() в ItemController для владельца с id {} и вещи с id {}.", ownerId, itemId);
         ItemDto update = itemService.update(itemDto, ownerId, itemId);
 
@@ -73,5 +80,16 @@ public class ItemController {
         List<ItemDto> search = itemService.search(text);
 
         return ResponseEntity.ok().body(search).getBody();
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto createComment(@RequestHeader(USER_ID) int userId,
+                                    @PathVariable int itemId,
+                                    @Valid @RequestBody CommentDto commentDto) {
+        log.info("Вызван метод createComment() в ItemController пользователем с id {} для вещи с id {}.",
+                userId, itemId);
+        CommentDto createComment = itemService.createComment(userId, itemId, commentDto);
+
+        return ResponseEntity.ok().body(createComment).getBody();
     }
 }

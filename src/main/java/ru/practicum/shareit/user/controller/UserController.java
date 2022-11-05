@@ -40,7 +40,8 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto create(@Validated({Create.class}) @RequestBody UserDto userDto) {
+    public UserDto create(@Validated({Create.class})
+                          @RequestBody UserDto userDto) {
         log.info("Вызван метод create() в UserController.");
         UserDto create = userService.create(userDto);
 
@@ -48,7 +49,9 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public UserDto update(@Validated({Update.class}) @RequestBody UserDto userDto, @PathVariable int id) {
+    public UserDto update(@Validated({Update.class})
+                          @RequestBody UserDto userDto,
+                          @PathVariable int id) {
         log.info("Вызван метод update() в UserController для пользователя с id {}.", id);
         UserDto update = userService.update(userDto, id);
 
