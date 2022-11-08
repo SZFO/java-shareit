@@ -13,7 +13,6 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
 import ru.practicum.shareit.item.service.ItemService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -85,7 +84,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentDto createComment(@RequestHeader(USER_ID) int userId,
                                     @PathVariable int itemId,
-                                    @Valid @RequestBody CommentDto commentDto) {
+                                    @Validated({Create.class}) @RequestBody CommentDto commentDto) {
         log.info("Вызван метод createComment() в ItemController пользователем с id {} для вещи с id {}.",
                 userId, itemId);
         CommentDto createComment = itemService.createComment(userId, itemId, commentDto);

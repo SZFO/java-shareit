@@ -4,6 +4,9 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.model.Comment;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class CommentMapper {
     public static CommentDto commentToDto(Comment comment) {
@@ -23,5 +26,11 @@ public class CommentMapper {
                 .author(null)
                 .created(commentDto.getCreated())
                 .build();
+    }
+
+    public static List<CommentDto> toDtoList(List<Comment> comments) {
+        return comments.stream()
+                .map(CommentMapper::commentToDto)
+                .collect(Collectors.toList());
     }
 }

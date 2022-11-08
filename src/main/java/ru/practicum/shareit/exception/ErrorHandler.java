@@ -18,8 +18,8 @@ public class ErrorHandler {
         return new ResponseEntity<>(Map.of("error", e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<Map<String, String>> handleException(ValidationException e) {
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<Map<String, String>> handleException(BadRequestException e) {
         log.info("Ошибка: {}", e.getMessage(), e);
 
         return new ResponseEntity<>(Map.of("error", e.getMessage()), HttpStatus.BAD_REQUEST);
