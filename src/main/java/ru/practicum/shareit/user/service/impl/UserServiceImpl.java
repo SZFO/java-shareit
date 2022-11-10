@@ -2,12 +2,12 @@ package ru.practicum.shareit.user.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.common.Storage;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
@@ -17,19 +17,20 @@ import static ru.practicum.shareit.user.mapper.UserMapper.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
-    private final Storage<User> userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public List<UserDto> getAll() {
-        return userRepository.getAll().stream()
+        return userRepository.findAll().stream()
                 .map(UserMapper::userToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public UserDto getById(int id) {
-        User user = userRepository.getById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %s не найден.", id)));
 
         return userToDto(user);
@@ -38,35 +39,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto create(UserDto userDto) {
         User user = dtoToUser(userDto);
-        throwCrossEmail(user.getEmail());
 
-        return userToDto(userRepository.create(user));
+        return userToDto(userRepository.save(user));
     }
 
     @Override
     public UserDto update(UserDto userDto, int id) {
-        User updatedUser = userRepository.getById(id)
+        User updatedUser = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %s не найден.", id)));
         if (userDto.getName() != null) {
             updatedUser.setName(userDto.getName());
         }
         if (userDto.getEmail() != null) {
-            throwCrossEmail(userDto.getEmail());
             updatedUser.setEmail(userDto.getEmail());
         }
-        return userToDto(userRepository.update(updatedUser));
-
-
+        return userToDto(userRepository.save(updatedUser));
     }
 
     @Override
     public void delete(int id) {
-        userRepository.delete(id);
-    }
-
-    private void throwCrossEmail(String email) {
-        if (userRepository.getAll().stream().anyMatch(a -> a.getEmail().equalsIgnoreCase(email))) {
-            throw new ConflictException(String.format("Пользователь с почтой %s уже существует.", email));
-        }
+        userRepository.deleteById(id);
     }
 }
