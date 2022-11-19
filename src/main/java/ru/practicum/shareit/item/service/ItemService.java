@@ -7,9 +7,9 @@ import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
 import java.util.List;
 
 public interface ItemService {
-    List<ItemDtoWithBooking> getAllByOwner(int ownerId);
+    List<ItemDtoWithBooking> findAllByOwner(int ownerId, int from, int size);
 
-    ItemDtoWithBooking getById(int userId, int id);
+    ItemDtoWithBooking findById(int userId, int id);
 
     ItemDto create(ItemDto itemDto, int ownerId);
 
@@ -17,7 +17,7 @@ public interface ItemService {
 
     void delete(int id);
 
-    List<ItemDto> search(String query);
+    List<ItemDto> search(String query, int from, int size);
 
     CommentDto createComment(int userId, int itemId, CommentDto commentDto);
 }

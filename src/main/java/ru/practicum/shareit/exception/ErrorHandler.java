@@ -12,23 +12,29 @@ import java.util.Map;
 @Slf4j
 public class ErrorHandler {
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Map<String, String>> handleException(RuntimeException e) {
+    public ResponseEntity<?> handleException(RuntimeException e) {
         log.info("Ошибка: {}", e.getMessage(), e);
 
-        return new ResponseEntity<>(Map.of("error", e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<Map<String, String>> handleException(BadRequestException e) {
+    public ResponseEntity<?> handleException(BadRequestException e) {
         log.info("Ошибка: {}", e.getMessage(), e);
 
-        return new ResponseEntity<>(Map.of("error", e.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleException(NotFoundException e) {
+    public ResponseEntity<?> handleException(NotFoundException e) {
         log.info("Ошибка: {}", e.getMessage(), e);
 
-        return new ResponseEntity<>(Map.of("error", e.getMessage()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(IncorrectStateException.class)
+    public ResponseEntity<?> handleException(IncorrectStateException e) {
+        log.error("Ошибка: {}", e.getMessage(), e);
+        return new ResponseEntity<>(Map.of("error", e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }

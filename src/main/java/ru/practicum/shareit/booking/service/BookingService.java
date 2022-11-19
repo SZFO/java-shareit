@@ -10,9 +10,9 @@ public interface BookingService {
 
     BookingDto findById(int id, int userId);
 
-    List<BookingDto> findAllByBookerId(int bookerId, String state);
+    List<BookingDto> findAllByBookerId(int bookerId, String state, int from, int size);
 
-    List<BookingDto> findAllByOwnerId(int ownerId, String state);
+    List<BookingDto> findAllByOwnerId(int ownerId, String state, int from, int size);
 
     BookingDto approve(int bookingId, int ownerId, boolean approved);
 }

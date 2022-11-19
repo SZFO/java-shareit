@@ -15,6 +15,8 @@ public class CommentDto {
     @NotBlank(groups = {Create.class})
     private String text;
 
+    private ItemDto itemDto;
+
     private String authorName;
 
     private LocalDateTime created;

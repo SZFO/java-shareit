@@ -13,6 +13,8 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
 import ru.practicum.shareit.item.service.ItemService;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 /**
@@ -22,26 +24,30 @@ import java.util.List;
 @RequestMapping("/items")
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class ItemController {
     private final ItemService itemService;
 
     private static final String USER_ID = "X-Sharer-User-Id";
 
     @GetMapping
-    public List<ItemDtoWithBooking> getAllByOwner(@RequestHeader(USER_ID) int ownerId) {
-        log.info("Вызван метод getAll() в ItemController.");
-        List<ItemDtoWithBooking> allByOwner = itemService.getAllByOwner(ownerId);
+    public List<ItemDtoWithBooking> findAllByOwner(@RequestHeader(USER_ID) int ownerId,
+                                                  @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                                  @Positive @RequestParam(defaultValue = "10") int size) {
+        log.info("Вызван метод findAllByOwner() в ItemController для пользователя с id {}, где " +
+                "индекс первого элемента = {}, количество элементов для отображения {}", ownerId, from, size);
+        List<ItemDtoWithBooking> findAllByOwner = itemService.findAllByOwner(ownerId, from, size);
 
-        return ResponseEntity.ok().body(allByOwner).getBody();
+        return ResponseEntity.ok().body(findAllByOwner).getBody();
     }
 
     @GetMapping("/{id}")
-    public ItemDtoWithBooking getById(@RequestHeader(USER_ID) int userId,
+    public ItemDtoWithBooking findById(@RequestHeader(USER_ID) int userId,
                                       @PathVariable int id) {
-        log.info("Вызван метод getById() в ItemController для вещи с id {}.", id);
-        ItemDtoWithBooking getById = itemService.getById(userId, id);
+        log.info("Вызван метод findById() в ItemController для вещи с id {}.", id);
+        ItemDtoWithBooking findById = itemService.findById(userId, id);
 
-        return ResponseEntity.ok().body(getById).getBody();
+        return ResponseEntity.ok().body(findById).getBody();
     }
 
     @PostMapping
@@ -74,9 +80,12 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> search(@RequestParam String text) {
-        log.info("Вызван метод search() в ItemController для поиска вещи по тексту {}.", text);
-        List<ItemDto> search = itemService.search(text);
+    public List<ItemDto> search(@RequestParam String text,
+                                @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                @Positive @RequestParam(defaultValue = "10") int size) {
+        log.info("Вызван метод search() в ItemController для поиска вещи по тексту {}, где " +
+                "индекс первого элемента = {}, количество элементов для отображения {}", text, from, size);
+        List<ItemDto> search = itemService.search(text, from, size);
 
         return ResponseEntity.ok().body(search).getBody();
     }

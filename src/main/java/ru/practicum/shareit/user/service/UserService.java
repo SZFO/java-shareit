@@ -5,9 +5,9 @@ import ru.practicum.shareit.user.dto.UserDto;
 import java.util.List;
 
 public interface UserService {
-    List<UserDto> getAll();
+    List<UserDto> findAll();
 
-    UserDto getById(int id);
+    UserDto findById(int id);
 
     UserDto create(UserDto userDto);
 

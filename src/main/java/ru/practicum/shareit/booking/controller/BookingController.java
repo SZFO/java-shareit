@@ -3,12 +3,15 @@ package ru.practicum.shareit.booking.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 /**
@@ -18,6 +21,7 @@ import java.util.List;
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class BookingController {
     private final BookingService bookingService;
 
@@ -54,18 +58,24 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDto> findByBookerId(@RequestHeader(USER_ID) int bookerId,
-                                           @RequestParam(defaultValue = "ALL") String state) {
-        log.info("Вызван метод findByBookerId() в BookingController для пользователя с id {}.", bookerId);
-        List<BookingDto> findByBookerId = bookingService.findAllByBookerId(bookerId, state);
+                                           @RequestParam(defaultValue = "ALL") String state,
+                                           @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                           @Positive @RequestParam(defaultValue = "10") int size) {
+        log.info("Вызван метод findByBookerId() в BookingController для пользователя с id {}, где " +
+                "индекс первого элемента = {}, количество элементов для отображения {}", bookerId, from, size);
+        List<BookingDto> findByBookerId = bookingService.findAllByBookerId(bookerId, state, from, size);
 
         return ResponseEntity.ok().body(findByBookerId).getBody();
     }
 
     @GetMapping("/owner")
     public List<BookingDto> findByOwnerId(@RequestHeader(USER_ID) int ownerId,
-                                          @RequestParam(defaultValue = "ALL") String state) {
-        log.info("Вызван метод findByOwnerId() в BookingController для пользователя с id {}.", ownerId);
-        List<BookingDto> findByOwnerId = bookingService.findAllByOwnerId(ownerId, state);
+                                          @RequestParam(defaultValue = "ALL") String state,
+                                          @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                          @Positive @RequestParam(defaultValue = "10") int size) {
+        log.info("Вызван метод findByOwnerId() в BookingController для пользователя с id {}, где " +
+                "индекс первого элемента = {}, количество элементов для отображения {}", ownerId, from, size);
+        List<BookingDto> findByOwnerId = bookingService.findAllByOwnerId(ownerId, state, from, size);
 
         return ResponseEntity.ok().body(findByOwnerId).getBody();
     }

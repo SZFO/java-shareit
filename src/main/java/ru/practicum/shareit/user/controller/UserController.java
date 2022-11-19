@@ -24,19 +24,19 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<UserDto> getAll() {
+    public List<UserDto> findAll() {
         log.info("Вызван метод getAll() в UserController.");
-        List<UserDto> getAll = userService.getAll();
+        List<UserDto> findAll = userService.findAll();
 
-        return ResponseEntity.ok().body(getAll).getBody();
+        return ResponseEntity.ok().body(findAll).getBody();
     }
 
     @GetMapping("/{id}")
-    public UserDto getById(@PathVariable int id) {
+    public UserDto findById(@PathVariable int id) {
         log.info("Вызван метод getById() в UserController для пользователя с id {}.", id);
-        UserDto getById = userService.getById(id);
+        UserDto findById = userService.findById(id);
 
-        return ResponseEntity.ok().body(getById).getBody();
+        return ResponseEntity.ok().body(findById).getBody();
     }
 
     @PostMapping
@@ -59,7 +59,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteUser(@PathVariable int id) {
+    public ResponseEntity<HttpStatus> delete(@PathVariable int id) {
         log.info("Вызван метод delete() в UserController для пользователя с id {}.", id);
         userService.delete(id);
 

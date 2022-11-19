@@ -9,7 +9,6 @@ import ru.practicum.shareit.booking.model.Status;
 
 @Component
 public class BookingMapper {
-
     public static BookingDto bookingToDto(Booking booking) {
         return BookingDto.builder()
                 .id(booking.getId())
@@ -20,17 +19,6 @@ public class BookingMapper {
                 .status(booking.getStatus())
                 .build();
 
-    }
-
-    public static Booking dtoToBooking(BookingDto bookingDto) {
-        return Booking.builder()
-                .id(bookingDto.getId())
-                .start(bookingDto.getStart())
-                .end(bookingDto.getEnd())
-                .item(bookingDto.getItem())
-                .booker(bookingDto.getBooker())
-                .status(bookingDto.getStatus())
-                .build();
     }
 
     public static Booking dtoRequestToBooking(BookingRequestDto bookingRequestDto) {
