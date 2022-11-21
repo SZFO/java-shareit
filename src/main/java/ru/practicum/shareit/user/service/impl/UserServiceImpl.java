@@ -22,14 +22,14 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public List<UserDto> findAll() {
+    public List<UserDto> getAll() {
         return userRepository.findAll().stream()
                 .map(UserMapper::userToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public UserDto findById(int id) {
+    public UserDto getById(int id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Пользователь с id = %s не найден.", id)));
 

@@ -280,11 +280,11 @@ class ItemServiceTest {
     }
 
     @Test
-    void findByIdTest() {
+    void getByIdTest() {
         when(itemRepository.findById(anyInt()))
                 .thenReturn(Optional.of(item));
 
-        ItemDtoWithBooking result = itemService.findById(item.getId(), owner.getId());
+        ItemDtoWithBooking result = itemService.getById(item.getId(), owner.getId());
 
         assertNotNull(result);
         assertEquals(item.getId(), result.getId());
@@ -293,22 +293,22 @@ class ItemServiceTest {
     }
 
     @Test
-    void findByIdNotFoundTest() {
+    void getByIdNotFoundTest() {
         when(itemRepository.findById(anyInt()))
                 .thenReturn(Optional.empty());
 
-        Exception ex = assertThrows(NotFoundException.class, () -> itemService.findById(item.getId(), owner.getId()));
+        Exception ex = assertThrows(NotFoundException.class, () -> itemService.getById(item.getId(), owner.getId()));
         assertEquals(String.format("Вещь с id = %s не найдена.", item.getId()), ex.getMessage());
     }
 
     @Test
-    void findAllByOwnerTest() {
+    void getAllByOwnerTest() {
         when(userRepository.findById(anyInt()))
                 .thenReturn(Optional.of(owner));
         when(itemRepository.findByOwnerId(anyInt(), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of(item)));
 
-        List<ItemDtoWithBooking> result = itemService.findAllByOwner(owner.getId(), 0, 5);
+        List<ItemDtoWithBooking> result = itemService.getAllByOwner(owner.getId(), Pageable.unpaged());
 
         assertEquals(1, result.size());
     }
@@ -329,7 +329,7 @@ class ItemServiceTest {
         when(itemRepository.searchAvailableItems(anyString(), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of(item)));
 
-        List<ItemDto> result = itemService.search("AirPods", 0, 5);
+        List<ItemDto> result = itemService.search("AirPods", Pageable.unpaged());
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -340,7 +340,7 @@ class ItemServiceTest {
         when(itemRepository.searchAvailableItems(anyString(), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of()));
 
-        List<ItemDto> result = itemService.search("", 0, 5);
+        List<ItemDto> result = itemService.search("", Pageable.unpaged());
 
         assertNotNull(result);
         assertEquals(0, result.size());

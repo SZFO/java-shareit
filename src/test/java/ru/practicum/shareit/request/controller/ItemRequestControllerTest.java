@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
@@ -81,8 +82,8 @@ class ItemRequestControllerTest {
     }
 
     @Test
-    void findByIdTest() throws Exception {
-        when(itemRequestService.findById(anyInt(), anyInt()))
+    void getByIdTest() throws Exception {
+        when(itemRequestService.getById(anyInt(), anyInt()))
                 .thenReturn(itemRequestDtoOut);
 
         mockMvc.perform(get("/requests/{requestId}", itemRequestDto.getId())
@@ -95,12 +96,12 @@ class ItemRequestControllerTest {
                 .andExpect(jsonPath("$.description", is(itemRequestDto.getDescription()), String.class));
 
         verify(itemRequestService, times(1))
-                .findById(anyInt(), anyInt());
+                .getById(anyInt(), anyInt());
     }
 
     @Test
-    void findAllTest() throws Exception {
-        when(itemRequestService.findAll(anyInt(), anyInt(), anyInt()))
+    void getAllTest() throws Exception {
+        when(itemRequestService.getAll(anyInt(), any(Pageable.class)))
                 .thenReturn(List.of(itemRequestDtoOut));
 
         mockMvc.perform(get("/requests")
@@ -115,12 +116,12 @@ class ItemRequestControllerTest {
                 .andExpect(jsonPath("$[0].description", is(itemRequestDto.getDescription()), String.class));
 
         verify(itemRequestService, times(1))
-                .findAll(anyInt(), anyInt(), anyInt());
+                .getAll(anyInt(), any(Pageable.class));
     }
 
     @Test
-    void findAllFromOtherUserTest() throws Exception {
-        when(itemRequestService.findAllFromOtherUser(anyInt(), anyInt(), anyInt()))
+    void getAllFromOtherUserTest() throws Exception {
+        when(itemRequestService.getAllFromOtherUser(anyInt(), any(Pageable.class)))
                 .thenReturn(List.of(itemRequestDtoOut));
 
         mockMvc.perform(get("/requests/all")
@@ -135,6 +136,6 @@ class ItemRequestControllerTest {
                 .andExpect(jsonPath("$[0].description", is(itemRequestDto.getDescription()), String.class));
 
         verify(itemRequestService, times(1))
-                .findAllFromOtherUser(anyInt(), anyInt(), anyInt());
+                .getAllFromOtherUser(anyInt(), any(Pageable.class));
     }
 }

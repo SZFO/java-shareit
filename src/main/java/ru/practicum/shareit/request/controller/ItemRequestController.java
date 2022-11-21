@@ -2,6 +2,9 @@ package ru.practicum.shareit.request.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +26,9 @@ import java.util.List;
 @Slf4j
 @Validated
 public class ItemRequestController {
-    private final ItemRequestService itemRequestService;
-
+    private static final Sort DEFAULT_SORT = Sort.by(Sort.Direction.ASC, "created");
     private static final String USER_ID = "X-Sharer-User-Id";
+    private final ItemRequestService itemRequestService;
 
     @PostMapping
     public ItemRequestDto create(@RequestHeader(USER_ID) int userId,
@@ -37,34 +40,36 @@ public class ItemRequestController {
     }
 
     @GetMapping("/{requestId}")
-    public ItemRequestDtoOut findById(@RequestHeader(USER_ID) int userId,
+    public ItemRequestDtoOut getById(@RequestHeader(USER_ID) int userId,
                                 @PathVariable int requestId) {
-        log.info("Вызван метод findById() в ItemRequestController пользователем с id {} о запросе с id {}.",
+        log.info("Вызван метод getById() в ItemRequestController пользователем с id {} о запросе с id {}.",
                 userId, requestId);
-        ItemRequestDtoOut findById = itemRequestService.findById(userId, requestId);
+        ItemRequestDtoOut getById = itemRequestService.getById(userId, requestId);
 
-        return ResponseEntity.ok().body(findById).getBody();
+        return ResponseEntity.ok().body(getById).getBody();
     }
 
     @GetMapping
-    public List<ItemRequestDtoOut> findAll(@RequestHeader(USER_ID) int userId,
+    public List<ItemRequestDtoOut> getAll(@RequestHeader(USER_ID) int userId,
                                            @PositiveOrZero @RequestParam(defaultValue = "0") int from,
                                            @Positive @RequestParam(defaultValue = "10") int size) {
-        log.info("Вызван метод findAll() в ItemRequestController пользователем с id {}, где " +
+        log.info("Вызван метод getAll() в ItemRequestController пользователем с id {}, где " +
                 "индекс первого элемента = {}, количество элементов для отображения {}", userId, from, size);
-        List<ItemRequestDtoOut> findAll = itemRequestService.findAll(userId, from, size);
+        Pageable pageable = PageRequest.of(from / size, size, DEFAULT_SORT);
+        List<ItemRequestDtoOut> getAll = itemRequestService.getAll(userId, pageable);
 
-        return ResponseEntity.ok().body(findAll).getBody();
+        return ResponseEntity.ok().body(getAll).getBody();
     }
 
     @GetMapping("/all")
-    public List<ItemRequestDtoOut> findAllFromOtherUser(@RequestHeader(USER_ID) int userId,
+    public List<ItemRequestDtoOut> getAllFromOtherUser(@RequestHeader(USER_ID) int userId,
                                                    @PositiveOrZero @RequestParam(defaultValue = "0") int from,
                                                    @Positive @RequestParam(defaultValue = "10") int size) {
-        log.info("Вызван метод findAllFromOtherUser() в ItemRequestController пользователем с id {}, где " +
+        log.info("Вызван метод getAllFromOtherUser() в ItemRequestController пользователем с id {}, где " +
                 "индекс первого элемента = {}, количество элементов для отображения {}", userId, from, size);
-        List<ItemRequestDtoOut> findAllFromOtherUser = itemRequestService.findAllFromOtherUser(userId, from, size);
+        Pageable pageable = PageRequest.of(from / size, size, DEFAULT_SORT);
+        List<ItemRequestDtoOut> getAllFromOtherUser = itemRequestService.getAllFromOtherUser(userId, pageable);
 
-        return ResponseEntity.ok().body(findAllFromOtherUser).getBody();
+        return ResponseEntity.ok().body(getAllFromOtherUser).getBody();
     }
 }

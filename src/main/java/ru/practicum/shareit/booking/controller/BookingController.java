@@ -2,6 +2,9 @@ package ru.practicum.shareit.booking.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +26,11 @@ import java.util.List;
 @Slf4j
 @Validated
 public class BookingController {
-    private final BookingService bookingService;
+    private static final Sort DEFAULT_SORT = Sort.by(Sort.Direction.DESC, "start");
 
     private static final String USER_ID = "X-Sharer-User-Id";
+
+    private final BookingService bookingService;
 
     @PostMapping
     public BookingDto create(@RequestHeader(USER_ID) int userId,
@@ -48,35 +53,37 @@ public class BookingController {
     }
 
     @GetMapping("/{bookingId}")
-    public BookingDto findById(@RequestHeader(USER_ID) int userId,
-                               @PathVariable int bookingId) {
-        log.info("Вызван метод findById() в BookingController для бронирования с id {}.", bookingId);
-        BookingDto findById = bookingService.findById(bookingId, userId);
+    public BookingDto getById(@RequestHeader(USER_ID) int userId,
+                              @PathVariable int bookingId) {
+        log.info("Вызван метод getById() в BookingController для бронирования с id {}.", bookingId);
+        BookingDto getById = bookingService.getById(bookingId, userId);
 
-        return ResponseEntity.ok().body(findById).getBody();
+        return ResponseEntity.ok().body(getById).getBody();
     }
 
     @GetMapping
-    public List<BookingDto> findByBookerId(@RequestHeader(USER_ID) int bookerId,
-                                           @RequestParam(defaultValue = "ALL") String state,
-                                           @PositiveOrZero @RequestParam(defaultValue = "0") int from,
-                                           @Positive @RequestParam(defaultValue = "10") int size) {
-        log.info("Вызван метод findByBookerId() в BookingController для пользователя с id {}, где " +
-                "индекс первого элемента = {}, количество элементов для отображения {}", bookerId, from, size);
-        List<BookingDto> findByBookerId = bookingService.findAllByBookerId(bookerId, state, from, size);
-
-        return ResponseEntity.ok().body(findByBookerId).getBody();
-    }
-
-    @GetMapping("/owner")
-    public List<BookingDto> findByOwnerId(@RequestHeader(USER_ID) int ownerId,
+    public List<BookingDto> getByBookerId(@RequestHeader(USER_ID) int bookerId,
                                           @RequestParam(defaultValue = "ALL") String state,
                                           @PositiveOrZero @RequestParam(defaultValue = "0") int from,
                                           @Positive @RequestParam(defaultValue = "10") int size) {
-        log.info("Вызван метод findByOwnerId() в BookingController для пользователя с id {}, где " +
-                "индекс первого элемента = {}, количество элементов для отображения {}", ownerId, from, size);
-        List<BookingDto> findByOwnerId = bookingService.findAllByOwnerId(ownerId, state, from, size);
+        log.info("Вызван метод getByBookerId() в BookingController для пользователя с id {}, где " +
+                "индекс первого элемента = {}, количество элементов для отображения {}", bookerId, from, size);
+        Pageable pageable = PageRequest.of(from / size, size, DEFAULT_SORT);
+        List<BookingDto> getByBookerId = bookingService.getAllByBookerId(bookerId, state, pageable);
 
-        return ResponseEntity.ok().body(findByOwnerId).getBody();
+        return ResponseEntity.ok().body(getByBookerId).getBody();
+    }
+
+    @GetMapping("/owner")
+    public List<BookingDto> getByOwnerId(@RequestHeader(USER_ID) int ownerId,
+                                         @RequestParam(defaultValue = "ALL") String state,
+                                         @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                         @Positive @RequestParam(defaultValue = "10") int size) {
+        log.info("Вызван метод getByOwnerId() в BookingController для пользователя с id {}, где " +
+                "индекс первого элемента = {}, количество элементов для отображения {}", ownerId, from, size);
+        Pageable pageable = PageRequest.of(from / size, size, DEFAULT_SORT);
+        List<BookingDto> getByOwnerId = bookingService.getAllByOwnerId(ownerId, state, pageable);
+
+        return ResponseEntity.ok().body(getByOwnerId).getBody();
     }
 }

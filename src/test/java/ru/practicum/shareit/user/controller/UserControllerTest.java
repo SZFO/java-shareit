@@ -48,8 +48,8 @@ class UserControllerTest {
     }
 
     @Test
-    void findAllTest() throws Exception {
-        when(userService.findAll())
+    void getAllTest() throws Exception {
+        when(userService.getAll())
                 .thenReturn(List.of(userDto));
 
         mockMvc.perform(get("/users"))
@@ -59,12 +59,12 @@ class UserControllerTest {
                 .andExpect(jsonPath("$[0].email", is(userDto.getEmail()), String.class));
 
         verify(userService, times(1))
-                .findAll();
+                .getAll();
     }
 
     @Test
-    void findByIdTest() throws Exception {
-        when(userService.findById(anyInt()))
+    void getByIdTest() throws Exception {
+        when(userService.getById(anyInt()))
                 .thenReturn(userDto);
 
         mockMvc.perform(get("/users/{userId}", userDto.getId())
@@ -78,7 +78,7 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.email", is(userDto.getEmail()), String.class));
 
         verify(userService, times(1))
-                .findById(anyInt());
+                .getById(anyInt());
     }
 
     @Test

@@ -2,9 +2,7 @@ package ru.practicum.shareit.booking.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
@@ -31,7 +29,6 @@ import static ru.practicum.shareit.user.mapper.UserMapper.*;
 @RequiredArgsConstructor
 @Transactional
 public class BookingServiceImpl implements BookingService {
-    private static final Sort DEFAULT_SORT = Sort.by(Sort.Direction.DESC, "start");
 
     private final BookingRepository bookingRepository;
 
@@ -42,7 +39,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDto save(int userId, BookingRequestDto bookingRequestDto) {
         Booking booking = dtoRequestToBooking(bookingRequestDto);
-        booking.setBooker(dtoToUser(userService.findById(userId)));
+        booking.setBooker(dtoToUser(userService.getById(userId)));
         Item item = getValidItemForBooking(bookingRequestDto, booking, userId);
         booking.setItem(item);
         Booking bookingCreate = bookingRepository.save(booking);
@@ -51,7 +48,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingDto findById(int id, int userId) {
+    public BookingDto getById(int id, int userId) {
         Booking booking = bookingRepository
                 .findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Бронирование с id = %s не существует.", id)));
@@ -63,12 +60,11 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> findAllByBookerId(int bookerId, String state, int from, int size) {
+    public List<BookingDto> getAllByBookerId(int bookerId, String state, Pageable pageable) {
         throwNotValidState(state);
-        userService.findById(bookerId);
+        userService.getById(bookerId);
         Page<Booking> bookings = null;
         LocalDateTime now = LocalDateTime.now();
-        Pageable pageable = PageRequest.of(from / size, size, DEFAULT_SORT);
         switch (BookingState.valueOf(state)) {
             case ALL:
                 bookings = bookingRepository.findAllByBookerIdOrderByStartDesc(bookerId, pageable);
@@ -97,12 +93,11 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> findAllByOwnerId(int ownerId, String state, int from, int size) {
+    public List<BookingDto> getAllByOwnerId(int ownerId, String state, Pageable pageable) {
         throwNotValidState(state);
-        userService.findById(ownerId);
+        userService.getById(ownerId);
         Page<Booking> bookings = null;
         LocalDateTime now = LocalDateTime.now();
-        Pageable pageable = PageRequest.of(from / size, size, DEFAULT_SORT);
         switch (BookingState.valueOf(state)) {
             case ALL:
                 bookings = bookingRepository.findAllByItemOwnerIdOrderByStartDesc(ownerId, pageable);

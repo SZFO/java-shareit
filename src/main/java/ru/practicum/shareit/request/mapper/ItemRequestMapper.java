@@ -20,11 +20,11 @@ public class ItemRequestMapper {
                 .build();
     }
 
-    public static ItemRequest dtoToItemRequest(ItemRequestDto itemRequestDto, User requester, LocalDateTime created) {
+    public static ItemRequest dtoToItemRequest(ItemRequestDto itemRequestDto, User requester) {
         return ItemRequest.builder()
                 .description(itemRequestDto.getDescription())
                 .requester(requester)
-                .created(created)
+                .created(LocalDateTime.now())
                 .build();
     }
 

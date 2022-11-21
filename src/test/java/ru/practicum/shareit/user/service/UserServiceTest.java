@@ -52,22 +52,22 @@ class UserServiceTest {
     }
 
     @Test
-    void findAllTest() {
+    void getAllTest() {
         when(userRepository.findAll())
                 .thenReturn(List.of(user));
 
-        List<UserDto> users = userService.findAll();
+        List<UserDto> users = userService.getAll();
 
         assertNotNull(users);
         assertEquals(1, users.size());
     }
 
     @Test
-    void findByIdTest() {
+    void getByIdTest() {
         when(userRepository.findById(user.getId()))
                 .thenReturn(Optional.of(user));
 
-        UserDto result = userService.findById(user.getId());
+        UserDto result = userService.getById(user.getId());
 
         assertNotNull(result);
         assertEquals(user.getId(), result.getId());

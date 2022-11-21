@@ -93,7 +93,7 @@ class ItemRequestServiceTest {
 
     @Test
     void saveTest() {
-        when(userService.findById(anyInt()))
+        when(userService.getById(anyInt()))
                 .thenReturn(userToDto(requester));
         when(itemRequestRepository.save(any()))
                 .thenReturn(itemRequest);
@@ -106,15 +106,15 @@ class ItemRequestServiceTest {
     }
 
     @Test
-    void findByIdTest() {
-        when(userService.findById(anyInt()))
+    void getByIdTest() {
+        when(userService.getById(anyInt()))
                 .thenReturn(userToDto(requester));
         when(itemRequestRepository.findById(any()))
                 .thenReturn(Optional.ofNullable(itemRequest));
         when(itemRequestRepository.save(any()))
                 .thenReturn(itemRequest);
 
-        ItemRequestDtoOut result = itemRequestService.findById(requester.getId(), itemRequest.getId());
+        ItemRequestDtoOut result = itemRequestService.getById(requester.getId(), itemRequest.getId());
 
         assertNotNull(result);
         assertEquals(itemRequestDto.getId(), result.getId());
@@ -122,39 +122,40 @@ class ItemRequestServiceTest {
     }
 
     @Test
-    void findByIdNotFoundTest() {
-        when(userService.findById(anyInt()))
+    void getByIdNotFoundTest() {
+        when(userService.getById(anyInt()))
                 .thenReturn(userToDto(requester));
         when(itemRequestRepository.findById(anyInt()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> itemRequestService.findById(requester.getId(),
+        assertThrows(NotFoundException.class, () -> itemRequestService.getById(requester.getId(),
                 itemRequest.getId()));
     }
 
     @Test
-    void findAllTest() {
-        when(userService.findById(anyInt()))
+    void getAllTest() {
+        when(userService.getById(anyInt()))
                 .thenReturn(userToDto(requester));
         when(itemRequestRepository.findAllByRequesterId(anyInt(), any()))
                 .thenReturn(new PageImpl<>(List.of(itemRequest)));
         when(itemRepository.findByRequestId(anyInt()))
                 .thenReturn(List.of(item));
 
-        List<ItemRequestDtoOut> result = itemRequestService.findAll(requester.getId(), 0, 5);
+
+        List<ItemRequestDtoOut> result = itemRequestService.getAll(requester.getId(), Pageable.unpaged());
 
         assertNotNull(result);
         assertEquals(1, result.size());
     }
 
     @Test
-    void findAllFromOtherUserTest() {
-        when(userService.findById(anyInt()))
+    void getAllFromOtherUserTest() {
+        when(userService.getById(anyInt()))
                 .thenReturn(userToDto(requester));
         when(itemRequestRepository.findAllByRequesterIdIsNot(anyInt(), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of(itemRequest)));
 
-        List<ItemRequestDtoOut> result = itemRequestService.findAllFromOtherUser(requester.getId(), 0, 5);
+        List<ItemRequestDtoOut> result = itemRequestService.getAllFromOtherUser(requester.getId(), Pageable.unpaged());
 
         assertNotNull(result);
         assertEquals(1, result.size());

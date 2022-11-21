@@ -2,8 +2,7 @@ package ru.practicum.shareit.item.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingItemDto;
@@ -34,7 +33,6 @@ import static ru.practicum.shareit.booking.mapper.BookingMapper.*;
 @RequiredArgsConstructor
 @Transactional
 public class ItemServiceImpl implements ItemService {
-    private static final Sort DEFAULT_SORT = Sort.by(Sort.Direction.ASC, "id");
 
     private final ItemRepository itemRepository;
 
@@ -47,9 +45,8 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRequestRepository itemRequestRepository;
 
     @Override
-    public List<ItemDtoWithBooking> findAllByOwner(int userId, int from, int size) {
-        int page = from / size;
-        Page<Item> itemsDto = itemRepository.findByOwnerId(userId, PageRequest.of(page, size, DEFAULT_SORT));
+    public List<ItemDtoWithBooking> getAllByOwner(int userId, Pageable pageable) {
+        Page<Item> itemsDto = itemRepository.findByOwnerId(userId, pageable);
 
         return itemsDto.stream()
                 .map(ItemMapper::itemWithBookingToDto)
@@ -59,7 +56,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDtoWithBooking findById(int userId, int id) {
+    public ItemDtoWithBooking getById(int userId, int id) {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Вещь с id = %s не найдена.", id)));
         ItemDtoWithBooking itemDtoWithBooking = itemWithBookingToDto(item);
@@ -111,13 +108,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> search(String text, int from, int size) {
+    public List<ItemDto> search(String text, Pageable pageable) {
         if (text.isBlank()) {
             return Collections.emptyList();
         }
-        int page = from / size;
         Page<Item> items = itemRepository
-                .searchAvailableItems(text, PageRequest.of(page, size, DEFAULT_SORT));
+                .searchAvailableItems(text, pageable);
 
         return toDtoList(items.stream()
                 .collect(toList()));

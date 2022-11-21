@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -130,8 +131,8 @@ class BookingControllerTest {
 
 
     @Test
-    void findByIdTest() throws Exception {
-        when(bookingService.findById(anyInt(), anyInt()))
+    void getByIdTest() throws Exception {
+        when(bookingService.getById(anyInt(), anyInt()))
                 .thenReturn(bookingDto);
 
         mockMvc.perform(get("/bookings/{bookingId}", bookingDto.getId())
@@ -143,12 +144,12 @@ class BookingControllerTest {
                 .andExpect(content().json(mapper.writeValueAsString(bookingDto)));
 
         verify(bookingService, times(1))
-                .findById(anyInt(), anyInt());
+                .getById(anyInt(), anyInt());
     }
 
     @Test
-    void findByBookerIdTest() throws Exception {
-        when(bookingService.findAllByBookerId(anyInt(), anyString(), anyInt(), anyInt()))
+    void getByBookerIdTest() throws Exception {
+        when(bookingService.getAllByBookerId(anyInt(), anyString(), any(Pageable.class)))
                 .thenReturn(List.of(bookingDto));
 
         mockMvc.perform(get("/bookings")
@@ -163,12 +164,12 @@ class BookingControllerTest {
                 .andExpect(content().json(mapper.writeValueAsString(List.of(bookingDto))));
 
         verify(bookingService, times(1))
-                .findAllByBookerId(anyInt(), anyString(), anyInt(), anyInt());
+                .getAllByBookerId(anyInt(), anyString(), any(Pageable.class));
     }
 
     @Test
-    void findByOwnerIdTest() throws Exception {
-        when(bookingService.findAllByOwnerId(anyInt(), anyString(), anyInt(), anyInt()))
+    void getByOwnerIdTest() throws Exception {
+        when(bookingService.getAllByOwnerId(anyInt(), anyString(), any(Pageable.class)))
                 .thenReturn(List.of(bookingDto));
 
         mockMvc.perform(get("/bookings/owner")
@@ -184,6 +185,6 @@ class BookingControllerTest {
                 .andExpect(content().json(mapper.writeValueAsString(List.of(bookingDto))));
 
         verify(bookingService, times(1))
-                .findAllByOwnerId(anyInt(), anyString(), anyInt(), anyInt());
+                .getAllByOwnerId(anyInt(), anyString(), any(Pageable.class));
     }
 }

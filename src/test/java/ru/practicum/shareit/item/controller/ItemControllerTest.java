@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.exception.BadRequestException;
@@ -100,8 +101,8 @@ class ItemControllerTest {
     }
 
     @Test
-    void findAllByOwnerTest() throws Exception {
-        when(itemService.findAllByOwner(anyInt(), anyInt(), anyInt()))
+    void getAllByOwnerTest() throws Exception {
+        when(itemService.getAllByOwner(anyInt(), any(Pageable.class)))
                 .thenReturn(List.of(itemDtoWithBooking));
 
         mockMvc.perform(get("/items")
@@ -114,11 +115,11 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$[0].available", is(itemDtoWithBooking.getAvailable()), Boolean.class));
 
         verify(itemService, times(1))
-                .findAllByOwner(anyInt(), anyInt(), anyInt());
+                .getAllByOwner(anyInt(), any(Pageable.class));
     }
 
     @Test
-    void findAllByOwnerInvalidFromParamTest() throws Exception {
+    void getAllByOwnerInvalidFromParamTest() throws Exception {
         mockMvc.perform(get("/items")
                         .header(USER_ID, "1")
                         .param("from", "-100")
@@ -165,8 +166,8 @@ class ItemControllerTest {
     }
 
     @Test
-    void findByIdTest() throws Exception {
-        when(itemService.findById(anyInt(), anyInt()))
+    void getByIdTest() throws Exception {
+        when(itemService.getById(anyInt(), anyInt()))
                 .thenReturn(itemDtoWithBooking);
 
         mockMvc.perform(get("/items/{itemId}", itemDto.getId())
@@ -181,12 +182,12 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.available", is(itemDto.getAvailable()), Boolean.class));
 
         verify(itemService, times(1))
-                .findById(anyInt(), anyInt());
+                .getById(anyInt(), anyInt());
     }
 
     @Test
-    void findByIdNotFoundTest() throws Exception {
-        when(itemService.findById(anyInt(), anyInt()))
+    void getByIdNotFoundTest() throws Exception {
+        when(itemService.getById(anyInt(), anyInt()))
                 .thenThrow(NotFoundException.class);
 
         mockMvc.perform(get("/items/{itemId}", itemDto.getId())
@@ -234,7 +235,7 @@ class ItemControllerTest {
 
     @Test
     void searchTest() throws Exception {
-        when(itemService.search(anyString(), anyInt(), anyInt()))
+        when(itemService.search(anyString(), any(Pageable.class)))
                 .thenReturn(List.of(itemDto));
 
         mockMvc.perform(get("/items/search")
@@ -252,7 +253,7 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$[0].available", is(itemDto.getAvailable()), Boolean.class));
 
         verify(itemService, times(1))
-                .search(anyString(), anyInt(), anyInt());
+                .search(anyString(), any(Pageable.class));
     }
 
     @Test
