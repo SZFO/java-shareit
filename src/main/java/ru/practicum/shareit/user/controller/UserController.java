@@ -59,7 +59,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteUser(@PathVariable int id) {
+    public ResponseEntity<HttpStatus> delete(@PathVariable int id) {
         log.info("Вызван метод delete() в UserController для пользователя с id {}.", id);
         userService.delete(id);
 
