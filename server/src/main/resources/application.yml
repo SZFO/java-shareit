@@ -3,8 +3,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQL10Dialect
-        format_sql: 'true'
-        show_sql: 'true'
+        format_sql: true
+        show_sql: true
     hibernate:
       ddl-auto: create-drop
   datasource:
@@ -14,7 +14,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/shareit
   h2:
     console:
-      enabled: 'true'
+      enabled: true
   sql:
     init:
       mode: always
@@ -30,4 +30,4 @@ logging:
           interceptor: TRACE
           nodeValue: INFO
 server:
-  port: '9090'
+  port: 9090

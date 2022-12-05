@@ -20,12 +20,14 @@ public class UserController {
     @GetMapping
     public ResponseEntity<Object> getAll() {
         log.info("Вызван метод getAll() в UserController.");
+
         return userClient.getAll();
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<Object> getById(@PathVariable long userId) {
         log.info("Вызван метод getById() в UserController для пользователя с id {}.", userId);
+
         return userClient.getById(userId);
     }
 
@@ -33,6 +35,7 @@ public class UserController {
     public ResponseEntity<Object> create(@Validated({Create.class})
                                          @RequestBody UserDto userDto) {
         log.info("Вызван метод create() в UserController.");
+
         return userClient.create(userDto);
     }
 
@@ -41,12 +44,14 @@ public class UserController {
                                          @PathVariable long userId,
                                          @RequestBody UserDto userDto) {
         log.info("Вызван метод update() в UserController для пользователя с id {}.", userId);
+
         return userClient.update(userId, userDto);
     }
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<Object> delete(@PathVariable long userId) {
         log.info("Вызван метод delete() в UserController для пользователя с id {}.", userId);
+
         return userClient.delete(userId);
     }
 }

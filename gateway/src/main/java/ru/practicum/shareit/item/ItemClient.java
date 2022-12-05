@@ -32,6 +32,7 @@ public class ItemClient extends BaseClient {
                 "from", from,
                 "size", size
         );
+
         return get("?from={from}&size={size}", userId, parameters);
     }
 
@@ -57,6 +58,7 @@ public class ItemClient extends BaseClient {
                 "from", from,
                 "size", size
         );
+
         return get("/search?text={text}&from={from}&size={size}", userId, parameters);
     }
 

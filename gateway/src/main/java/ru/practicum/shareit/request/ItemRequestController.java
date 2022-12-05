@@ -26,6 +26,7 @@ public class ItemRequestController {
     public ResponseEntity<Object> create(@RequestHeader(USER_ID) long userId,
                                          @Valid @RequestBody ItemRequestDto itemRequestDto) {
         log.info("Вызван метод create() в ItemRequestController пользователем с id {}.", userId);
+
         return itemRequestClient.create(userId, itemRequestDto);
     }
 
@@ -34,12 +35,14 @@ public class ItemRequestController {
                                           @PathVariable int requestId) {
         log.info("Вызван метод getById() в ItemRequestController пользователем с id {} о запросе с id {}.",
                 userId, requestId);
+
         return itemRequestClient.getById(userId, requestId);
     }
 
     @GetMapping
     public ResponseEntity<Object> getAll(@RequestHeader(USER_ID) int userId) {
         log.info("Вызван метод getAll() в ItemRequestController пользователем с id {}", userId);
+
         return itemRequestClient.getAll(userId);
     }
 
@@ -49,6 +52,7 @@ public class ItemRequestController {
                                                       @Positive @RequestParam(defaultValue = "10") int size) {
         log.info("Вызван метод getAllFromOtherUser() в ItemRequestController пользователем с id {}, где " +
                 "индекс первого элемента = {}, количество элементов для отображения {}", userId, from, size);
+
         return itemRequestClient.getAllFromOtherUser(userId, from, size);
     }
 }

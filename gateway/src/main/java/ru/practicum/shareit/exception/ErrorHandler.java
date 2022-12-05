@@ -16,15 +16,15 @@ public class ErrorHandler {
     public ResponseEntity<Map<String, String>> handleValidateException(
             final ValidationException e) {
         log.info(e.getMessage());
-        return new ResponseEntity<>(Map.of("error",
-                e.getMessage()), HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(Map.of("error", e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
     public ResponseEntity<Map<String, String>> handleIllegalArgumentException(
             final IllegalArgumentException e) {
         log.info(e.getMessage());
-        return new ResponseEntity<>(Map.of("error",
-                e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+
+        return new ResponseEntity<>(Map.of("error", e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

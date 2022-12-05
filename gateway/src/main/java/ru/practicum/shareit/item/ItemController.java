@@ -47,6 +47,7 @@ public class ItemController {
                                          @RequestBody ItemDto itemDto,
                                          @RequestHeader(USER_ID) long userId) {
         log.info("Вызван метод create() в ItemController для владельца c id {}.", userId);
+
         return itemClient.create(userId, itemDto);
     }
 
@@ -56,12 +57,14 @@ public class ItemController {
                                          @RequestHeader(USER_ID) long userId,
                                          @PathVariable long itemId) {
         log.info("Вызван метод update() в ItemController для владельца с id {} и вещи с id {}.", userId, itemId);
+
         return itemClient.update(itemDto, userId, itemId);
     }
 
     @DeleteMapping("/{itemId}")
     public ResponseEntity<Object> delete(@PathVariable long itemId) {
         log.info("Вызван метод delete() в ItemController для вещи с id {}.", itemId);
+
         return itemClient.delete(itemId);
     }
 
@@ -72,6 +75,7 @@ public class ItemController {
                                          @Positive @RequestParam(defaultValue = "10") int size) {
         log.info("Вызван метод search() в ItemController для поиска вещи по тексту {}, где " +
                 "индекс первого элемента = {}, количество элементов для отображения {}", text, from, size);
+
         return itemClient.search(text, userId, from, size);
     }
 

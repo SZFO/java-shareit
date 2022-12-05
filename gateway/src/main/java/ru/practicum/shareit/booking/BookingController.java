@@ -32,6 +32,7 @@ public class BookingController {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
         log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
+
         return bookingClient.getBookings(userId, state, from, size);
     }
 
@@ -39,6 +40,7 @@ public class BookingController {
     public ResponseEntity<Object> bookItem(@RequestHeader(USER_ID) long userId,
                                            @RequestBody @Valid BookItemRequestDto requestDto) {
         log.info("Creating booking {}, userId={}", requestDto, userId);
+
         return bookingClient.bookItem(userId, requestDto);
     }
 
@@ -46,6 +48,7 @@ public class BookingController {
     public ResponseEntity<Object> getBooking(@RequestHeader(USER_ID) long userId,
                                              @PathVariable Long bookingId) {
         log.info("Get booking {}, userId={}", bookingId, userId);
+
         return bookingClient.getBooking(userId, bookingId);
     }
 
@@ -55,6 +58,7 @@ public class BookingController {
                                           @RequestParam boolean approved) {
         log.info("Вызван метод approve() в BookingController пользователем с id {} для бронирования с id {}.",
                 userId, bookingId);
+
         return bookingClient.approve(userId, bookingId, approved);
     }
 
@@ -67,6 +71,7 @@ public class BookingController {
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
         log.info("Вызван метод getByOwnerId() в BookingController для пользователя с id {}, где " +
                 "индекс первого элемента = {}, количество элементов для отображения {}", ownerId, from, size);
+
         return bookingClient.getByOwnerId(ownerId, state, from, size);
     }
 }
