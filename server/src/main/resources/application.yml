@@ -1,0 +1,33 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+        format_sql: true
+        show_sql: true
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    driverClassName: org.postgresql.Driver
+    password: streamfindfirst
+    username: shareit
+    url: jdbc:postgresql://localhost:5432/shareit
+  h2:
+    console:
+      enabled: true
+  sql:
+    init:
+      mode: always
+logging:
+  level:
+    org:
+      springframework:
+        orm:
+          jpa:
+            JpaTransactionManager: DEBUG
+            nodeValue: INFO
+        transaction:
+          interceptor: TRACE
+          nodeValue: INFO
+server:
+  port: 9090
